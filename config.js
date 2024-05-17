@@ -5,6 +5,7 @@ module.exports = {
 	},
 	amqp: {
 		host: 'labnav.my.id',
+		uri: 'amqp://ayamyeagah:1012@labnav.my.id:5672',
 		port: 5671,
 		SSL: {
 			ca: './ssl/ca_cert.pem',

@@ -1,6 +1,6 @@
 const config = require('./config');
 const datastream = require('./datastream');
-const pub = require('./producer-sby')
+const pub = require('./producer-sby-tls')
 
 // UDP Listening Address and port
 const ADDRESS = config.udp.address;
