@@ -1,0 +1,17 @@
+{
+  "name": "rabbitmq",
+  "version": "1.0.0",
+  "description": "producer service Surabaya station using RabbitMQ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "ayamyeagah",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "fs": "^0.0.1-security",
+    "split": "^1.0.1"
+  }
+}
