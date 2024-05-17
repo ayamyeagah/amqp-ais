@@ -7,10 +7,10 @@ module.exports = {
 		host: 'labnav.my.id',
 		port: 5671,
 		SSL: {
-			ca: '/path/to/ca_cert.pem',
-			cert: '/path/to/ca_cert.pem',
-			key: '/path/to/ca_cert.pem'
-		}
+			ca: './ssl/ca_cert.pem',
+			cert: './ssl/to/ca_cert.pem',
+			key: './ssl/to/ca_cert.pem'
+		},
 		exchange: 'ais',
 		routingKey: 'sby',
 		infoQueue: 'rawQueue'

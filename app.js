@@ -6,11 +6,7 @@ const pub = require('./producer-sby')
 const ADDRESS = config.udp.address;
 const PORT = config.udp.port;
 
-try {
-	datastream(PORT, ADDRESS, data => {
-		// console.log(data);
-		pub(data);
-	});
-} catch (err) {
-	console.error('Error datastream:', err);
-}
+datastream(PORT, ADDRESS, data => {
+	// console.log(data);
+	pub(data);
+});
