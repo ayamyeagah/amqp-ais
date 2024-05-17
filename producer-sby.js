@@ -2,14 +2,18 @@ const config = require('./config');
 const amqp = require('amqplib/callback_api');
 const fs = require('fs');
 
+const ca = [fs.readFileSync(config.amqp.SSL.ca)];
+const cert = fs.readFileSync(config.amqp.SSL.cert);
+const key = fs.readFileSync(config.amqp.SSL.key);
+
 async function pub(message) {
 	amqp.connect({
 		protocol: 'amqps',
 		hostname: config.amqp.host,
 		port: config.amqp.port,
-		ca: [fs.readFileSync(config.amqp.SSL.ca)],
-		cert: fs.readFileSync(config.amqp.SSL.cert),
-		key: fs.readFileSync(config.amqp.SSL.key)
+		ca: ca,
+		cert: cert,
+		key: key
 	}, function (error0, connection) {
 		if (error0) {
 			console.error('Connection error:', error0);
