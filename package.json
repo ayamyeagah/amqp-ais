@@ -4,8 +4,8 @@
   "description": "producer service Surabaya station using RabbitMQ",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node test.js"
   },
   "author": "ayamyeagah",
   "license": "ISC",

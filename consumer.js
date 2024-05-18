@@ -1,68 +1,53 @@
-/*
-    * for consumer, deleted soon 
-*/
+/**
+ * For consume message from broker
+ * 
+ * 1. Connect to rabbitmq server
+ * 2. Create a new channel
+ * 3. Create the exchange
+ * 4. Create the queue
+ * 5. Bind the queue to the exchange
+ * 6. Consume message from the queue
+ */
 
-const amqp = require('amqplib/callback_api');
-const fs = require('fs');
+const config = require('./config');
+const amqp = require('amqplib');
 
-const ca = [fs.readFileSync('/etc/rabbitmq/ssl/ca_cert.pem')];
+const uri = config.amqp.uri;
+const routingKey = config.amqp.routing;
+const exchange = config.amqp.exchange;
+const queueName = config.amqp.queue;
 
-amqp.connect({
-    protocol: 'amqps',
-    hostname: 'labnav.my.id',
-    port: 5671,
-    ca: ca,
-    cert: fs.readFileSync('/etc/rabbitmq/ssl/client_cert.pem'),
-    key: fs.readFileSync('/etc/rabbitmq/ssl/client_key.pem')
-}, function (error0, connection) {
-    if (error0) {
-        console.error('Connection error:', error0);
-        return;
+class Consumer {
+    channel;
+
+    async createChannel() {
+        try {
+            const conn = amqp.connect(uri);
+            this.channel = (await conn).createChannel();
+        } catch (err0) {
+            console.error('Error connection & creating channel:', err0);
+        }
     }
 
-    console.log('Connected successfully to RabbitMQ with SSL/TLS');
+    async sub(callback) {
+        try {
+            await this.channel.assertExchange(exchange, 'direct', {
+                durable: true
+            });
+            const q = await this.channel.assertQueue(queueName, {
+                durable: true
+            });
+            await this.channel.bindQueue(q.queue, exchange, routingKey);
 
-    connection.on('blocked', (reason) => {
-        console.log(`Connection blocked: ${reason}`);
-    });
-
-    connection.on('unblocked', () => {
-        console.log('Connection unblocked');
-    });
-
-    connection.createChannel(async function (error1, channel) {
-        if (error1) {
-            console.error('Channel error:', error1);
-            return;
+            this.channel.consume(q.queue, (msg) => {
+                const data = JSON.parse(msg.content);
+                callback(data.message);
+                this.channel.ack(msg);
+            });
+        } catch (err1) {
+            console.error('Error consuming message:', err1);
         }
+    }
+}
 
-        const exchangeName = 'ais';
-        const queueName = 'rawQueue';
-
-        await channel.assertExchange(exchangeName, 'direct');
-        const q = await channel.assertQueue(queueName, {
-            durable: true
-        });
-        await channel.bindQueue(q.queue, exchangeName, 'sby');
-
-        channel.consume(q.queue, (msg) => {
-            const data = JSON.parse(msg.content);
-            callback(data.message);
-            channel.ack(msg);
-        });
-
-        const queue = 'data_queue';
-
-        channel.assertQueue(queue, {
-            durable: false
-        });
-
-        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
-
-        channel.consume(queue, function (msg) {
-            console.log(" [x] Received %s", msg.content.toString());
-        }, {
-            noAck: true
-        });
-    });
-});
+module.exports = Consumer;

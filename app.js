@@ -1,12 +1,12 @@
 const config = require('./config');
 const datastream = require('./datastream');
-const pub = require('./producer-sby-tls')
+const Producer = require('./producer')
+const producer = new Producer();
 
 // UDP Listening Address and port
 const ADDRESS = config.udp.address;
 const PORT = config.udp.port;
 
 datastream(PORT, ADDRESS, data => {
-	// console.log(data);
-	pub(data);
+	producer.pub(data);
 });

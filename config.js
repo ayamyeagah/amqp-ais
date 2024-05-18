@@ -13,7 +13,7 @@ module.exports = {
 			key: './ssl/to/ca_cert.pem'
 		},
 		exchange: 'ais',
-		routingKey: 'sby',
-		infoQueue: 'rawQueue'
+		routing: 'nmea',
+		queue: 'station'
 	}
 }
