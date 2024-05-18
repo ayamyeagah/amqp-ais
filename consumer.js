@@ -22,8 +22,8 @@ class Consumer {
 
     async createChannel() {
         try {
-            const conn = amqp.connect(uri);
-            this.channel = (await conn).createChannel();
+            const conn = await amqp.connect(uri);
+            this.channel = await conn.createChannel();
         } catch (err0) {
             console.error('Error connection & creating channel:', err0);
         }
@@ -31,12 +31,18 @@ class Consumer {
 
     async sub(callback) {
         try {
+            if (!this.channel) {
+                await this.createChannel();
+            }
+
             await this.channel.assertExchange(exchange, 'direct', {
                 durable: true
             });
+
             const q = await this.channel.assertQueue(queueName, {
                 durable: true
             });
+
             await this.channel.bindQueue(q.queue, exchange, routingKey);
 
             this.channel.consume(q.queue, (msg) => {
