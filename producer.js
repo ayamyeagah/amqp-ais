@@ -10,8 +10,8 @@ class Producer {
 
     async createChannel() {
         try {
-            const conn = amqp.connect(uri);
-            this.channel = (await conn).createChannel();
+            const conn = await amqp.connect(uri);
+            this.channel = await conn.createChannel();
         } catch (err0) {
             console.error('Error connection & creating channel:', err0);
         }
@@ -41,7 +41,7 @@ class Producer {
                 }
             );
 
-            console.log(`$(message)`);
+            console.log(`${message}`);
         } catch (err1) {
             console.error('Error publishing message:', err1);
         }
