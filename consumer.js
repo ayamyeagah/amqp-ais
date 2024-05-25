@@ -57,3 +57,8 @@ class Consumer {
 }
 
 module.exports = Consumer;
+
+const consume = new Consumer();
+consume.sub(data => {
+    console.log(data);
+})
